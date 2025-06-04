@@ -4,7 +4,6 @@ const isProd = process.env.NODE_ENV === 'production'
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
-  swcMinify: true,
   trailingSlash: false,
 
   images: {
@@ -12,7 +11,7 @@ const nextConfig: NextConfig = {
   },
 
   experimental: {
-    ppr: !isProd ? true : false, // active only in dev
+    ppr: !isProd ? false : false, // active only in dev
   },
 
   env: {
