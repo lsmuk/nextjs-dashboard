@@ -37,6 +37,7 @@ export type State = {
   message?: string | null;
 };
 
+
 export async function authenticate(
   prevState: string | undefined,
   formData: FormData,
@@ -56,7 +57,10 @@ export async function authenticate(
   }
 }
  
-export async function createInvoice(prevState: State, formData: FormData) {
+export async function createInvoice(
+  state: State,
+  formData: FormData
+): Promise<State> {
   // Validate form using Zod
   const validatedFields = CreateInvoice.safeParse({
     customerId: formData.get('customerId'),
@@ -85,9 +89,8 @@ export async function createInvoice(prevState: State, formData: FormData) {
     `;
   } catch (error) {
     // If a database error occurs, return a more specific error.
-    return {
-      message: 'Database Error: Failed to Create Invoice.',
-    };
+    console.error(error);
+    return { message: state.message, errors: state.errors };
   }
  
   // Revalidate the cache for the invoices page and redirect the user.
@@ -97,9 +100,9 @@ export async function createInvoice(prevState: State, formData: FormData) {
 
 export async function updateInvoice(
   id: string,
-  prevState: State,
-  formData: FormData,
-) {
+  state: State,
+  formData: FormData
+): Promise<State> {
   const validatedFields = UpdateInvoice.safeParse({
     customerId: formData.get('customerId'),
     amount: formData.get('amount'),
@@ -123,7 +126,8 @@ export async function updateInvoice(
       WHERE id = ${id}
     `;
   } catch (error) {
-    return { message: 'Database Error: Failed to Update Invoice.' };
+    console.error(error);
+    return { message: state.message, errors: state.errors };
   }
  
   revalidatePath('/dashboard/invoices');
@@ -131,8 +135,6 @@ export async function updateInvoice(
 }
 
 export async function deleteInvoice(id: string) {
-  throw new Error('Failed to Delete Invoice');
-
   try {
     await sql`DELETE FROM invoices WHERE id = ${id}`;
   } catch (error) {

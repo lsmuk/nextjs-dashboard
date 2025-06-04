@@ -20,11 +20,17 @@ export default function EditInvoiceForm({
   customers: CustomerField[];
 }) {
   const initialState: State = { message: null, errors: {} };
-  const updateInvoiceWithId = updateInvoice.bind(null, invoice.id);
+  const updateInvoiceWithId = (state: State, formData: FormData) => {
+    return updateInvoice(invoice.id, state, formData);
+  };
   const [state, formAction] = useActionState(updateInvoiceWithId, initialState);
+  
+  if (state.errors && state.message) {
+    return { message: state.message, errors: state.errors };
+  }
 
   return (
-    <form action={formAction}>
+    <form action={formAction} >
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
         {/* Customer Name */}
         <div className="mb-4">

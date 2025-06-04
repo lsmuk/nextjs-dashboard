@@ -19,6 +19,12 @@ const nextConfig: NextConfig = {
       ? 'https://nextjs-dashboard-theta-eosin-63.vercel.app/'
       : 'http://localhost:3000',
   },
+
+  eslint: {
+    // Warning: This allows production builds to successfully complete even if
+    // your project has ESLint errors.
+    ignoreDuringBuilds: !isProd ? true : false,
+  },
 }
 
 export default nextConfig
